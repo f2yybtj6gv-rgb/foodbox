@@ -1,0 +1,2420 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FOODBOX ระบบบริหารจัดการคลังสินค้าขนมอบกรอบ">
+  <title>FOODBOX - ระบบคลังสินค้าขนมอบกรอบ</title>
+
+  <style>
+    :root {
+      --primary: #f5aa17;
+      --primary-dark: #d88c00;
+      --primary-light: #fff0b8;
+      --navy: #193f59;
+      --background: #fffdf7;
+      --surface: #ffffff;
+      --text: #2f2b22;
+      --muted: #7b7464;
+      --border: #eadfc5;
+      --success: #23864a;
+      --danger: #d64545;
+      --warning: #e48613;
+      --shadow: 0 10px 30px rgba(86, 61, 0, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      background: var(--background);
+      font-family: Tahoma, "Noto Sans Thai", Arial, sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 17px;
+      border: 0;
+      border-radius: 11px;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      color: #3e2c00;
+      background: linear-gradient(135deg, #ffd54f, var(--primary));
+    }
+
+    .btn-secondary {
+      color: var(--navy);
+      background: #fff5ce;
+      border: 1px solid #e7c967;
+    }
+
+    .btn-success {
+      color: #fff;
+      background: var(--success);
+    }
+
+    .btn-danger {
+      color: #fff;
+      background: var(--danger);
+    }
+
+    .btn-small {
+      min-height: 33px;
+      padding: 7px 11px;
+      font-size: 12px;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .form-control {
+      width: 100%;
+      min-height: 43px;
+      padding: 10px 13px;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(245, 170, 23, 0.15);
+    }
+
+    textarea.form-control {
+      min-height: 85px;
+      resize: vertical;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 16px;
+    }
+
+    .form-grid .full {
+      grid-column: 1 / -1;
+    }
+
+    /* Login */
+
+    .login-page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 10% 10%, #fff1a3 0, transparent 34%),
+        radial-gradient(circle at 90% 90%, #ffd15c 0, transparent 32%),
+        linear-gradient(135deg, #fffdf5, #ffe89b);
+    }
+
+    .login-card {
+      width: min(440px, 100%);
+      padding: 34px;
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid rgba(245, 170, 23, 0.35);
+      border-radius: 26px;
+      box-shadow: 0 25px 70px rgba(109, 75, 0, 0.22);
+    }
+
+    .login-logo {
+      display: block;
+      width: 190px;
+      max-width: 100%;
+      height: 145px;
+      margin: 0 auto 10px;
+      object-fit: contain;
+      border-radius: 14px;
+    }
+
+    .logo-fallback {
+      display: none;
+      width: 115px;
+      height: 115px;
+      margin: 0 auto 15px;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--navy), var(--primary));
+      border-radius: 24px;
+      font-size: 38px;
+      font-weight: 900;
+    }
+
+    .login-brand {
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .login-brand h1 {
+      color: var(--navy);
+      font-size: 27px;
+    }
+
+    .login-brand h1 span {
+      color: var(--primary);
+    }
+
+    .login-brand p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .login-heading {
+      margin-bottom: 18px;
+    }
+
+    .login-heading h2 {
+      margin-bottom: 6px;
+      font-size: 23px;
+    }
+
+    .login-heading p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .password-box {
+      position: relative;
+    }
+
+    .password-box input {
+      padding-right: 80px;
+    }
+
+    .password-toggle {
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      padding: 6px 8px;
+      color: var(--navy);
+      background: transparent;
+      border: 0;
+      transform: translateY(-50%);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .login-error {
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      color: #9d2929;
+      background: #ffe6e6;
+      border: 1px solid #ffc1c1;
+      border-radius: 9px;
+      font-size: 13px;
+    }
+
+    .demo-box {
+      margin-top: 18px;
+      padding: 13px;
+      color: #66500d;
+      background: #fff8dc;
+      border: 1px dashed #dcaf20;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    /* Layout */
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 30;
+      width: 260px;
+      height: 100vh;
+      padding: 18px 16px;
+      overflow-y: auto;
+      background: #fff;
+      border-right: 1px solid var(--border);
+    }
+
+    .sidebar-brand {
+      padding: 0 8px 18px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .sidebar-logo {
+      width: 130px;
+      height: 95px;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    .sidebar-logo-fallback {
+      display: none;
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 8px;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--navy), var(--primary));
+      border-radius: 18px;
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .sidebar-brand h1 {
+      color: var(--navy);
+      font-size: 20px;
+    }
+
+    .sidebar-brand h1 span {
+      color: var(--primary);
+    }
+
+    .sidebar-brand p {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .menu {
+      margin-top: 18px;
+    }
+
+    .menu-label {
+      padding: 0 12px 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .nav-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 5px;
+      padding: 12px;
+      color: #5b523d;
+      background: transparent;
+      border: 0;
+      border-radius: 11px;
+      text-align: left;
+    }
+
+    .nav-button:hover,
+    .nav-button.active {
+      color: var(--navy);
+      background: #fff0b0;
+    }
+
+    .nav-icon {
+      width: 23px;
+      color: var(--primary-dark);
+      text-align: center;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .sidebar-footer {
+      margin-top: 25px;
+      padding: 14px 10px 0;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .main {
+      grid-column: 2;
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 12px 28px;
+      background: rgba(255, 255, 255, 0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar h2 {
+      color: var(--navy);
+      font-size: 21px;
+    }
+
+    .mobile-menu {
+      display: none;
+      padding: 8px 12px;
+      color: var(--navy);
+      background: #fff1b9;
+      border: 0;
+      border-radius: 10px;
+      font-size: 20px;
+    }
+
+    .user-panel {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--navy), #31749d);
+      border-radius: 50%;
+      font-weight: 800;
+    }
+
+    .user-panel small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+    }
+
+    .content {
+      padding: 28px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 21px;
+    }
+
+    .page-heading h2 {
+      margin-bottom: 5px;
+      color: var(--navy);
+    }
+
+    .page-heading p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Cards */
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 17px;
+      margin-bottom: 22px;
+    }
+
+    .summary-card,
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-card {
+      position: relative;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .summary-card::after {
+      position: absolute;
+      right: -24px;
+      bottom: -30px;
+      width: 80px;
+      height: 80px;
+      background: rgba(245, 170, 23, 0.18);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .summary-label {
+      margin-bottom: 11px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .summary-value {
+      color: var(--navy);
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .summary-subtext {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .panel {
+      margin-bottom: 20px;
+      padding: 20px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 17px;
+    }
+
+    .panel-title h3 {
+      color: var(--navy);
+      font-size: 17px;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+    }
+
+    /* Tables */
+
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      white-space: nowrap;
+    }
+
+    th,
+    td {
+      padding: 12px 11px;
+      border-bottom: 1px solid #eee5cd;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      color: var(--navy);
+      background: #fff9e9;
+    }
+
+    tbody tr:hover {
+      background: #fffdf4;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 5px 9px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-in {
+      color: #15733b;
+      background: #ddf5e7;
+    }
+
+    .badge-out {
+      color: #a52f2f;
+      background: #ffe1e1;
+    }
+
+    .badge-normal {
+      color: #176a3a;
+      background: #ddf5e6;
+    }
+
+    .badge-warning {
+      color: #915600;
+      background: #fff0c8;
+    }
+
+    .badge-empty {
+      color: #a52f2f;
+      background: #ffe1e1;
+    }
+
+    .empty-state {
+      padding: 34px 15px !important;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 18px;
+    }
+
+    .toolbar .form-control {
+      width: auto;
+      min-width: 175px;
+    }
+
+    .stock-list {
+      list-style: none;
+    }
+
+    .stock-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid #eee5cd;
+    }
+
+    .stock-list li:last-child {
+      border-bottom: 0;
+    }
+
+    .stock-list small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+    }
+
+    /* Toast and modal */
+
+    .toast {
+      position: fixed;
+      right: 25px;
+      bottom: 25px;
+      z-index: 100;
+      max-width: 350px;
+      padding: 14px 18px;
+      color: #fff;
+      background: #2d2718;
+      border-radius: 13px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.23);
+    }
+
+    .toast.success {
+      background: var(--success);
+    }
+
+    .toast.error {
+      background: var(--danger);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(25, 20, 8, 0.48);
+    }
+
+    .modal {
+      width: min(480px, 100%);
+      padding: 23px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.22);
+    }
+
+    .modal h3 {
+      margin-bottom: 10px;
+      color: var(--navy);
+    }
+
+    .modal p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 1050px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-two {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        transform: translateX(-105%);
+        transition: transform 0.25s;
+        box-shadow: 15px 0 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        width: 100%;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .topbar {
+        padding: 12px 14px;
+      }
+
+      .content {
+        padding: 18px 14px;
+      }
+
+      .user-text {
+        display: none;
+      }
+
+      .page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .form-grid,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .toolbar .form-control,
+      .toolbar .btn {
+        width: 100%;
+      }
+
+      .login-card {
+        padding: 27px 21px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- หน้าเข้าสู่ระบบ -->
+  <section id="loginPage" class="login-page">
+    <div class="login-card">
+      <div class="login-brand">
+        <img
+          class="login-logo"
+          src="foodbox-logo.jpg"
+          alt="โลโก้ FOODBOX"
+          onerror="showLogoFallback(this, 'loginLogoFallback')"
+        >
+        <div id="loginLogoFallback" class="logo-fallback">FB</div>
+        <h1>FOOD<span>BOX</span></h1>
+        <p>ระบบบริหารจัดการคลังสินค้าขนมอบกรอบ</p>
+      </div>
+
+      <div class="login-heading">
+        <h2>เข้าสู่ระบบ</h2>
+        <p>กรอกชื่อผู้ใช้งานและรหัสผ่านเพื่อเข้าใช้งาน</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginUsername">ชื่อผู้ใช้งาน</label>
+          <input
+            id="loginUsername"
+            class="form-control"
+            type="text"
+            autocomplete="username"
+            placeholder="กรอกชื่อผู้ใช้งาน"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">รหัสผ่าน</label>
+          <div class="password-box">
+            <input
+              id="loginPassword"
+              class="form-control"
+              type="password"
+              autocomplete="current-password"
+              placeholder="กรอกรหัสผ่าน"
+              required
+            >
+            <button id="togglePassword" class="password-toggle" type="button">
+              แสดง
+            </button>
+          </div>
+        </div>
+
+        <div id="loginError" class="login-error hidden"></div>
+
+        <button class="btn btn-primary btn-block" type="submit">
+          เข้าสู่ระบบ
+        </button>
+      </form>
+
+      <div class="demo-box">
+        <strong>บัญชีทดลอง</strong><br>
+        ผู้ดูแลระบบ: admin / admin123<br>
+        หัวหน้าแผนก: manager / manager123<br>
+        ผู้ใช้งานทั่วไป: user / user123
+      </div>
+    </div>
+  </section>
+
+  <!-- ระบบหลัก -->
+  <section id="appPage" class="app hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <img
+          class="sidebar-logo"
+          src="foodbox-logo.jpg"
+          alt="โลโก้ FOODBOX"
+          onerror="showLogoFallback(this, 'sidebarLogoFallback')"
+        >
+        <div id="sidebarLogoFallback" class="sidebar-logo-fallback">FB</div>
+        <h1>FOOD<span>BOX</span></h1>
+        <p>Warehouse Management System</p>
+      </div>
+
+      <nav class="menu">
+        <div class="menu-label">เมนูหลัก</div>
+
+        <button class="nav-button active" type="button" data-page="dashboard">
+          <span class="nav-icon">▦</span>
+          <span>ภาพรวมระบบ</span>
+        </button>
+
+        <button class="nav-button" type="button" data-page="products">
+          <span class="nav-icon">□</span>
+          <span>สินค้าคงเหลือ</span>
+        </button>
+
+        <button class="nav-button" type="button" data-page="transactions">
+          <span class="nav-icon">⇄</span>
+          <span>รับเข้าและส่งออก</span>
+        </button>
+
+        <button
+          class="nav-button report-permission"
+          type="button"
+          data-page="reports"
+        >
+          <span class="nav-icon">▤</span>
+          <span>รายงาน</span>
+        </button>
+
+        <button
+          class="nav-button admin-permission"
+          type="button"
+          data-page="settings"
+        >
+          <span class="nav-icon">⚙</span>
+          <span>จัดการระบบ</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        FOODBOX Warehouse รุ่น 1.0<br>
+        ข้อมูลจัดเก็บภายในเบราว์เซอร์
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="mobileMenuButton" class="mobile-menu" type="button">
+            ☰
+          </button>
+          <h2 id="topbarTitle">ภาพรวมระบบ</h2>
+        </div>
+
+        <div class="user-panel">
+          <div id="userAvatar" class="avatar">ผ</div>
+          <div class="user-text">
+            <strong id="userDisplayName">ผู้ใช้งาน</strong>
+            <small id="userRoleName">สิทธิ์ผู้ใช้งาน</small>
+          </div>
+          <button id="logoutButton" class="btn btn-secondary" type="button">
+            ออกจากระบบ
+          </button>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- Dashboard -->
+        <section id="dashboard" class="page active">
+          <div class="page-heading">
+            <div>
+              <h2>ภาพรวมคลังสินค้า</h2>
+              <p>สรุปการรับเข้า ส่งออก และสินค้าคงเหลือ</p>
+            </div>
+            <strong id="currentDateText"></strong>
+          </div>
+
+          <div class="summary-grid">
+            <article class="summary-card">
+              <div class="summary-label">รายการสินค้า</div>
+              <div id="dashboardProductCount" class="summary-value">0</div>
+              <div class="summary-subtext">รายการทั้งหมด</div>
+            </article>
+
+            <article class="summary-card">
+              <div class="summary-label">สินค้าคงเหลือรวม</div>
+              <div id="dashboardTotalStock" class="summary-value">0</div>
+              <div class="summary-subtext">หน่วยทั้งหมด</div>
+            </article>
+
+            <article class="summary-card">
+              <div class="summary-label">รับเข้าวันนี้</div>
+              <div id="dashboardTodayIn" class="summary-value">0</div>
+              <div class="summary-subtext">หน่วย</div>
+            </article>
+
+            <article class="summary-card">
+              <div class="summary-label">ส่งออกวันนี้</div>
+              <div id="dashboardTodayOut" class="summary-value">0</div>
+              <div class="summary-subtext">หน่วย</div>
+            </article>
+          </div>
+
+          <div class="grid-two">
+            <div class="panel">
+              <div class="panel-title">
+                <h3>รายการเคลื่อนไหวล่าสุด</h3>
+              </div>
+
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>วันและเวลา</th>
+                      <th>สินค้า</th>
+                      <th>ประเภท</th>
+                      <th>จำนวน</th>
+                      <th>ผู้บันทึก</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboardTransactionTable"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-title">
+                <h3>สินค้าที่ต้องตรวจสอบ</h3>
+              </div>
+              <ul id="lowStockList" class="stock-list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- สินค้า -->
+        <section id="products" class="page">
+          <div class="page-heading">
+            <div>
+              <h2>สินค้าคงเหลือ</h2>
+              <p>จัดการและตรวจสอบปริมาณสินค้าในคลัง</p>
+            </div>
+          </div>
+
+          <div class="panel product-manage-permission">
+            <div class="panel-title">
+              <h3>เพิ่มสินค้าใหม่</h3>
+            </div>
+
+            <form id="productForm" class="form-grid">
+              <div class="form-group">
+                <label for="productCode">รหัสสินค้า</label>
+                <input
+                  id="productCode"
+                  class="form-control"
+                  type="text"
+                  placeholder="เช่น CRS-001"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="productName">ชื่อสินค้า</label>
+                <input
+                  id="productName"
+                  class="form-control"
+                  type="text"
+                  placeholder="ชื่อสินค้า"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="productCategory">หมวดหมู่</label>
+                <select id="productCategory" class="form-control" required>
+                  <option value="ขนมปังกรอบ">ขนมปังกรอบ</option>
+                  <option value="คุกกี้">คุกกี้</option>
+                  <option value="แครกเกอร์">แครกเกอร์</option>
+                  <option value="เวเฟอร์">เวเฟอร์</option>
+                  <option value="ขนมอบอื่น ๆ">ขนมอบอื่น ๆ</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="productUnit">หน่วยนับ</label>
+                <input
+                  id="productUnit"
+                  class="form-control"
+                  type="text"
+                  placeholder="เช่น ถุง กล่อง หรือลัง"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="productMinimum">จำนวนขั้นต่ำ</label>
+                <input
+                  id="productMinimum"
+                  class="form-control"
+                  type="number"
+                  min="0"
+                  step="1"
+                  value="10"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="productOpeningStock">ยอดเริ่มต้น</label>
+                <input
+                  id="productOpeningStock"
+                  class="form-control"
+                  type="number"
+                  min="0"
+                  step="1"
+                  value="0"
+                  required
+                >
+              </div>
+
+              <div class="full">
+                <button class="btn btn-primary" type="submit">
+                  บันทึกสินค้า
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="toolbar">
+              <input
+                id="productSearch"
+                class="form-control"
+                type="search"
+                placeholder="ค้นหารหัส ชื่อ หรือหมวดหมู่"
+              >
+            </div>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>รหัสสินค้า</th>
+                    <th>ชื่อสินค้า</th>
+                    <th>หมวดหมู่</th>
+                    <th>คงเหลือ</th>
+                    <th>ขั้นต่ำ</th>
+                    <th>สถานะ</th>
+                    <th class="admin-permission">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="productTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- รับเข้าและส่งออก -->
+        <section id="transactions" class="page">
+          <div class="page-heading">
+            <div>
+              <h2>รับเข้าและส่งออกสินค้า</h2>
+              <p>บันทึกความเคลื่อนไหวสินค้าในคลัง</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">
+              <h3>บันทึกรายการใหม่</h3>
+            </div>
+
+            <form id="transactionForm" class="form-grid">
+              <div class="form-group">
+                <label for="transactionType">ประเภทรายการ</label>
+                <select id="transactionType" class="form-control" required>
+                  <option value="IN">รับสินค้าเข้า</option>
+                  <option value="OUT">ส่งสินค้าออก</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="transactionProduct">สินค้า</label>
+                <select
+                  id="transactionProduct"
+                  class="form-control"
+                  required
+                ></select>
+              </div>
+
+              <div class="form-group">
+                <label for="transactionQuantity">จำนวน</label>
+                <input
+                  id="transactionQuantity"
+                  class="form-control"
+                  type="number"
+                  min="1"
+                  step="1"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="transactionReference">เลขที่เอกสาร</label>
+                <input
+                  id="transactionReference"
+                  class="form-control"
+                  type="text"
+                  placeholder="เช่น PO-001 หรือ SO-001"
+                >
+              </div>
+
+              <div class="form-group full">
+                <label for="transactionNote">หมายเหตุ</label>
+                <textarea
+                  id="transactionNote"
+                  class="form-control"
+                  placeholder="รายละเอียดเพิ่มเติม"
+                ></textarea>
+              </div>
+
+              <div class="full">
+                <button class="btn btn-primary" type="submit">
+                  บันทึกรายการ
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">
+              <h3>ประวัติการรับเข้าและส่งออก</h3>
+            </div>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>วันและเวลา</th>
+                    <th>รหัสสินค้า</th>
+                    <th>ชื่อสินค้า</th>
+                    <th>ประเภท</th>
+                    <th>จำนวน</th>
+                    <th>เอกสาร</th>
+                    <th>ผู้บันทึก</th>
+                    <th>หมายเหตุ</th>
+                  </tr>
+                </thead>
+                <tbody id="transactionTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- รายงาน -->
+        <section id="reports" class="page">
+          <div class="page-heading">
+            <div>
+              <h2>รายงานคลังสินค้า</h2>
+              <p>รายงานรายวัน รายเดือน รายปี และช่วงวันที่</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="toolbar">
+              <select id="reportPeriod" class="form-control">
+                <option value="day">รายวัน</option>
+                <option value="month">รายเดือน</option>
+                <option value="year">รายปี</option>
+                <option value="custom">กำหนดช่วงวันที่</option>
+              </select>
+
+              <input id="reportDate" class="form-control" type="date">
+              <input id="reportStartDate" class="form-control hidden" type="date">
+              <input id="reportEndDate" class="form-control hidden" type="date">
+
+              <button
+                id="generateReportButton"
+                class="btn btn-primary"
+                type="button"
+              >
+                แสดงรายงาน
+              </button>
+
+              <button
+                id="exportCsvButton"
+                class="btn btn-success"
+                type="button"
+              >
+                ดาวน์โหลด CSV
+              </button>
+            </div>
+
+            <div class="summary-grid">
+              <article class="summary-card">
+                <div class="summary-label">รับเข้ารวม</div>
+                <div id="reportTotalIn" class="summary-value">0</div>
+              </article>
+
+              <article class="summary-card">
+                <div class="summary-label">ส่งออกรวม</div>
+                <div id="reportTotalOut" class="summary-value">0</div>
+              </article>
+
+              <article class="summary-card">
+                <div class="summary-label">จำนวนรายการ</div>
+                <div id="reportTransactionCount" class="summary-value">0</div>
+              </article>
+
+              <article class="summary-card">
+                <div class="summary-label">ผลต่างสุทธิ</div>
+                <div id="reportNet" class="summary-value">0</div>
+              </article>
+            </div>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>วันและเวลา</th>
+                    <th>รหัสสินค้า</th>
+                    <th>ชื่อสินค้า</th>
+                    <th>ประเภท</th>
+                    <th>จำนวน</th>
+                    <th>เอกสาร</th>
+                    <th>ผู้บันทึก</th>
+                  </tr>
+                </thead>
+                <tbody id="reportTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ตั้งค่า -->
+        <section id="settings" class="page">
+          <div class="page-heading">
+            <div>
+              <h2>จัดการระบบ</h2>
+              <p>เมนูสำหรับผู้ดูแลระบบเท่านั้น</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">
+              <h3>สิทธิ์ของผู้ใช้งาน</h3>
+            </div>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>กลุ่มผู้ใช้งาน</th>
+                    <th>สิทธิ์การใช้งาน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>ผู้ดูแลระบบ</td>
+                    <td>ใช้งานทุกเมนู เพิ่มและลบสินค้า ดูรายงาน และคืนค่าระบบ</td>
+                  </tr>
+                  <tr>
+                    <td>หัวหน้าแผนก</td>
+                    <td>เพิ่มสินค้า รับเข้า ส่งออก และดูรายงาน</td>
+                  </tr>
+                  <tr>
+                    <td>ผู้ใช้งานทั่วไป</td>
+                    <td>ดูสินค้าและบันทึกรับเข้า–ส่งออก</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">
+              <h3>คืนค่าข้อมูลเริ่มต้น</h3>
+            </div>
+            <p style="margin-bottom:16px;color:var(--muted);line-height:1.7">
+              ข้อมูลสินค้าและประวัติรายการปัจจุบันจะถูกลบ
+              และเปลี่ยนกลับเป็นข้อมูลตัวอย่าง
+            </p>
+            <button id="resetDataButton" class="btn btn-danger" type="button">
+              คืนค่าข้อมูลเริ่มต้น
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </section>
+
+  <div id="confirmOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="confirmTitle">ยืนยันการดำเนินการ</h3>
+      <p id="confirmMessage"></p>
+      <div class="modal-actions">
+        <button id="confirmCancelButton" class="btn btn-secondary" type="button">
+          ยกเลิก
+        </button>
+        <button id="confirmOkButton" class="btn btn-danger" type="button">
+          ยืนยัน
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script>
+    "use strict";
+
+    var USERS = [
+      {
+        username: "admin",
+        password: "admin123",
+        name: "ผู้ดูแลระบบ",
+        role: "admin",
+        roleName: "ผู้ดูแลระบบ"
+      },
+      {
+        username: "manager",
+        password: "manager123",
+        name: "หัวหน้าแผนกคลัง",
+        role: "manager",
+        roleName: "หัวหน้าแผนก"
+      },
+      {
+        username: "user",
+        password: "user123",
+        name: "พนักงานคลัง",
+        role: "user",
+        roleName: "ผู้ใช้งานทั่วไป"
+      }
+    ];
+
+    var DEFAULT_PRODUCTS = [
+      {
+        id: 101,
+        code: "CRS-001",
+        name: "ขนมปังกรอบรสเนย",
+        category: "ขนมปังกรอบ",
+        unit: "ถุง",
+        stock: 120,
+        minimum: 20
+      },
+      {
+        id: 102,
+        code: "CKI-001",
+        name: "คุกกี้ช็อกโกแลต",
+        category: "คุกกี้",
+        unit: "กล่อง",
+        stock: 75,
+        minimum: 15
+      },
+      {
+        id: 103,
+        code: "WFR-001",
+        name: "เวเฟอร์รสวานิลลา",
+        category: "เวเฟอร์",
+        unit: "ลัง",
+        stock: 8,
+        minimum: 10
+      },
+      {
+        id: 104,
+        code: "CRK-001",
+        name: "แครกเกอร์ธัญพืช",
+        category: "แครกเกอร์",
+        unit: "กล่อง",
+        stock: 45,
+        minimum: 10
+      }
+    ];
+
+    var PAGE_TITLES = {
+      dashboard: "ภาพรวมระบบ",
+      products: "สินค้าคงเหลือ",
+      transactions: "รับเข้าและส่งออก",
+      reports: "รายงานคลังสินค้า",
+      settings: "จัดการระบบ"
+    };
+
+    var currentUser = null;
+    var products = loadStoredData("foodbox_products", DEFAULT_PRODUCTS);
+    var transactions = loadStoredData("foodbox_transactions", []);
+    var currentReportRows = [];
+    var confirmCallback = null;
+
+    function showLogoFallback(image, fallbackId) {
+      image.style.display = "none";
+      document.getElementById(fallbackId).style.display = "flex";
+    }
+
+    function cloneData(data) {
+      return JSON.parse(JSON.stringify(data));
+    }
+
+    function loadStoredData(key, fallback) {
+      try {
+        var value = localStorage.getItem(key);
+
+        if (value !== null) {
+          var parsed = JSON.parse(value);
+
+          if (Array.isArray(parsed)) {
+            return parsed;
+          }
+        }
+      } catch (error) {
+        console.error("ไม่สามารถอ่านข้อมูลได้", error);
+      }
+
+      return cloneData(fallback);
+    }
+
+    function saveAllData() {
+      try {
+        localStorage.setItem("foodbox_products", JSON.stringify(products));
+        localStorage.setItem(
+          "foodbox_transactions",
+          JSON.stringify(transactions)
+        );
+        return true;
+      } catch (error) {
+        showToast("ไม่สามารถบันทึกข้อมูลได้", "error");
+        return false;
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value === null || value === undefined ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function pad(value) {
+      return ("0" + value).slice(-2);
+    }
+
+    function getLocalDateString(dateValue) {
+      var date = dateValue ? new Date(dateValue) : new Date();
+
+      return (
+        date.getFullYear() +
+        "-" +
+        pad(date.getMonth() + 1) +
+        "-" +
+        pad(date.getDate())
+      );
+    }
+
+    function formatDateTime(value) {
+      var date = new Date(value);
+
+      if (isNaN(date.getTime())) {
+        return "-";
+      }
+
+      return date.toLocaleString("th-TH", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString("th-TH");
+    }
+
+    function generateId() {
+      return Date.now() + Math.floor(Math.random() * 1000);
+    }
+
+    function findProduct(productId) {
+      return products.find(function(product) {
+        return Number(product.id) === Number(productId);
+      });
+    }
+
+    function showToast(message, type) {
+      var toast = document.getElementById("toast");
+
+      toast.textContent = message;
+      toast.className = "toast";
+
+      if (type) {
+        toast.classList.add(type);
+      }
+
+      clearTimeout(showToast.timer);
+
+      showToast.timer = setTimeout(function() {
+        toast.classList.add("hidden");
+      }, 2800);
+    }
+
+    function showConfirmation(title, message, callback) {
+      document.getElementById("confirmTitle").textContent = title;
+      document.getElementById("confirmMessage").textContent = message;
+      document.getElementById("confirmOverlay").classList.remove("hidden");
+      confirmCallback = callback;
+    }
+
+    function closeConfirmation() {
+      document.getElementById("confirmOverlay").classList.add("hidden");
+      confirmCallback = null;
+    }
+
+    function canAccess(pageId) {
+      if (!currentUser) {
+        return false;
+      }
+
+      var permissions = {
+        admin: [
+          "dashboard",
+          "products",
+          "transactions",
+          "reports",
+          "settings"
+        ],
+        manager: [
+          "dashboard",
+          "products",
+          "transactions",
+          "reports"
+        ],
+        user: [
+          "dashboard",
+          "products",
+          "transactions"
+        ]
+      };
+
+      return permissions[currentUser.role].indexOf(pageId) !== -1;
+    }
+
+    function applyPermissions() {
+      document.querySelectorAll(".admin-permission").forEach(function(element) {
+        element.classList.toggle("hidden", currentUser.role !== "admin");
+      });
+
+      document.querySelectorAll(".report-permission").forEach(function(element) {
+        var allowed =
+          currentUser.role === "admin" || currentUser.role === "manager";
+
+        element.classList.toggle("hidden", !allowed);
+      });
+
+      document
+        .querySelectorAll(".product-manage-permission")
+        .forEach(function(element) {
+          var allowed =
+            currentUser.role === "admin" || currentUser.role === "manager";
+
+          element.classList.toggle("hidden", !allowed);
+        });
+    }
+
+    function login(username, password) {
+      var user = USERS.find(function(item) {
+        return item.username === username && item.password === password;
+      });
+
+      if (!user) {
+        return false;
+      }
+
+      currentUser = cloneData(user);
+
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("appPage").classList.remove("hidden");
+      document.getElementById("userDisplayName").textContent = currentUser.name;
+      document.getElementById("userRoleName").textContent =
+        currentUser.roleName;
+      document.getElementById("userAvatar").textContent =
+        currentUser.name.charAt(0);
+
+      applyPermissions();
+      openPage("dashboard");
+      showToast("เข้าสู่ระบบสำเร็จ", "success");
+
+      return true;
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById("appPage").classList.add("hidden");
+      document.getElementById("loginPage").classList.remove("hidden");
+      document.getElementById("loginForm").reset();
+      document.getElementById("loginError").classList.add("hidden");
+      document.getElementById("loginPassword").type = "password";
+      document.getElementById("togglePassword").textContent = "แสดง";
+    }
+
+    function openPage(pageId) {
+      if (!canAccess(pageId)) {
+        showToast("คุณไม่มีสิทธิ์เข้าใช้งานเมนูนี้", "error");
+        return;
+      }
+
+      document.querySelectorAll(".page").forEach(function(page) {
+        page.classList.toggle("active", page.id === pageId);
+      });
+
+      document.querySelectorAll(".nav-button").forEach(function(button) {
+        button.classList.toggle(
+          "active",
+          button.getAttribute("data-page") === pageId
+        );
+      });
+
+      document.getElementById("topbarTitle").textContent =
+        PAGE_TITLES[pageId];
+
+      document.getElementById("sidebar").classList.remove("open");
+      renderAll();
+    }
+
+    function renderDashboard() {
+      var today = getLocalDateString();
+
+      var totalStock = products.reduce(function(total, product) {
+        return total + Number(product.stock || 0);
+      }, 0);
+
+      var todayRows = transactions.filter(function(transaction) {
+        return getLocalDateString(transaction.createdAt) === today;
+      });
+
+      var totalIn = todayRows
+        .filter(function(row) {
+          return row.type === "IN";
+        })
+        .reduce(function(total, row) {
+          return total + Number(row.quantity);
+        }, 0);
+
+      var totalOut = todayRows
+        .filter(function(row) {
+          return row.type === "OUT";
+        })
+        .reduce(function(total, row) {
+          return total + Number(row.quantity);
+        }, 0);
+
+      document.getElementById("dashboardProductCount").textContent =
+        formatNumber(products.length);
+      document.getElementById("dashboardTotalStock").textContent =
+        formatNumber(totalStock);
+      document.getElementById("dashboardTodayIn").textContent =
+        formatNumber(totalIn);
+      document.getElementById("dashboardTodayOut").textContent =
+        formatNumber(totalOut);
+
+      var recent = transactions
+        .slice()
+        .sort(function(a, b) {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        })
+        .slice(0, 8);
+
+      var html = "";
+
+      recent.forEach(function(row) {
+        var product = findProduct(row.productId);
+        var typeText = row.type === "IN" ? "รับเข้า" : "ส่งออก";
+        var badge = row.type === "IN" ? "badge-in" : "badge-out";
+
+        html +=
+          "<tr>" +
+          "<td>" + escapeHtml(formatDateTime(row.createdAt)) + "</td>" +
+          "<td>" + escapeHtml(product ? product.name : "ไม่พบสินค้า") + "</td>" +
+          "<td><span class='badge " + badge + "'>" +
+          typeText +
+          "</span></td>" +
+          "<td>" + formatNumber(row.quantity) + "</td>" +
+          "<td>" + escapeHtml(row.createdBy) + "</td>" +
+          "</tr>";
+      });
+
+      if (!html) {
+        html =
+          "<tr><td colspan='5' class='empty-state'>" +
+          "ยังไม่มีรายการเคลื่อนไหว</td></tr>";
+      }
+
+      document.getElementById("dashboardTransactionTable").innerHTML = html;
+
+      var lowStock = products.filter(function(product) {
+        return Number(product.stock) <= Number(product.minimum);
+      });
+
+      var lowHtml = "";
+
+      lowStock.forEach(function(product) {
+        lowHtml +=
+          "<li><div><strong>" +
+          escapeHtml(product.name) +
+          "</strong><small>" +
+          escapeHtml(product.code) +
+          "</small></div><strong style='color:var(--danger)'>" +
+          formatNumber(product.stock) +
+          " " +
+          escapeHtml(product.unit) +
+          "</strong></li>";
+      });
+
+      if (!lowHtml) {
+        lowHtml =
+          "<li><span style='color:var(--muted)'>" +
+          "ไม่มีสินค้าต่ำกว่าระดับขั้นต่ำ</span></li>";
+      }
+
+      document.getElementById("lowStockList").innerHTML = lowHtml;
+    }
+
+    function getStockStatus(product) {
+      if (Number(product.stock) === 0) {
+        return { text: "สินค้าหมด", css: "badge-empty" };
+      }
+
+      if (Number(product.stock) <= Number(product.minimum)) {
+        return { text: "ใกล้หมด", css: "badge-warning" };
+      }
+
+      return { text: "ปกติ", css: "badge-normal" };
+    }
+
+    function renderProducts() {
+      var keyword = document
+        .getElementById("productSearch")
+        .value
+        .trim()
+        .toLowerCase();
+
+      var filtered = products.filter(function(product) {
+        return (
+          String(product.code).toLowerCase().indexOf(keyword) !== -1 ||
+          String(product.name).toLowerCase().indexOf(keyword) !== -1 ||
+          String(product.category).toLowerCase().indexOf(keyword) !== -1
+        );
+      });
+
+      var html = "";
+
+      filtered.forEach(function(product) {
+        var status = getStockStatus(product);
+        var deleteColumn = "";
+
+        if (currentUser && currentUser.role === "admin") {
+          deleteColumn =
+            "<td><button type='button' " +
+            "class='btn btn-danger btn-small delete-product' " +
+            "data-id='" + Number(product.id) + "'>ลบ</button></td>";
+        }
+
+        html +=
+          "<tr>" +
+          "<td>" + escapeHtml(product.code) + "</td>" +
+          "<td>" + escapeHtml(product.name) + "</td>" +
+          "<td>" + escapeHtml(product.category) + "</td>" +
+          "<td><strong>" + formatNumber(product.stock) + "</strong> " +
+          escapeHtml(product.unit) + "</td>" +
+          "<td>" + formatNumber(product.minimum) + "</td>" +
+          "<td><span class='badge " + status.css + "'>" +
+          status.text + "</span></td>" +
+          deleteColumn +
+          "</tr>";
+      });
+
+      if (!html) {
+        html =
+          "<tr><td colspan='7' class='empty-state'>ไม่พบสินค้า</td></tr>";
+      }
+
+      document.getElementById("productTable").innerHTML = html;
+
+      document.querySelectorAll(".delete-product").forEach(function(button) {
+        button.addEventListener("click", function() {
+          requestDeleteProduct(Number(button.getAttribute("data-id")));
+        });
+      });
+    }
+
+    function renderProductOptions() {
+      var html = "";
+
+      products.forEach(function(product) {
+        html +=
+          "<option value='" + Number(product.id) + "'>" +
+          escapeHtml(product.code) + " - " +
+          escapeHtml(product.name) + " (คงเหลือ " +
+          formatNumber(product.stock) + " " +
+          escapeHtml(product.unit) + ")</option>";
+      });
+
+      if (!html) {
+        html = "<option value=''>ยังไม่มีสินค้า</option>";
+      }
+
+      document.getElementById("transactionProduct").innerHTML = html;
+    }
+
+    function addProduct(event) {
+      event.preventDefault();
+
+      if (
+        !currentUser ||
+        (currentUser.role !== "admin" && currentUser.role !== "manager")
+      ) {
+        showToast("คุณไม่มีสิทธิ์เพิ่มสินค้า", "error");
+        return;
+      }
+
+      var code = document
+        .getElementById("productCode")
+        .value.trim()
+        .toUpperCase();
+
+      var name = document.getElementById("productName").value.trim();
+      var category = document.getElementById("productCategory").value;
+      var unit = document.getElementById("productUnit").value.trim();
+      var minimum = Number(
+        document.getElementById("productMinimum").value
+      );
+      var openingStock = Number(
+        document.getElementById("productOpeningStock").value
+      );
+
+      if (!code || !name || !unit) {
+        showToast("กรุณากรอกข้อมูลให้ครบถ้วน", "error");
+        return;
+      }
+
+      if (
+        !Number.isInteger(minimum) ||
+        minimum < 0 ||
+        !Number.isInteger(openingStock) ||
+        openingStock < 0
+      ) {
+        showToast("จำนวนต้องเป็นเลขจำนวนเต็มตั้งแต่ 0 ขึ้นไป", "error");
+        return;
+      }
+
+      var duplicated = products.some(function(product) {
+        return String(product.code).toUpperCase() === code;
+      });
+
+      if (duplicated) {
+        showToast("รหัสสินค้านี้มีอยู่แล้ว", "error");
+        return;
+      }
+
+      var productId = generateId();
+
+      products.push({
+        id: productId,
+        code: code,
+        name: name,
+        category: category,
+        unit: unit,
+        stock: openingStock,
+        minimum: minimum
+      });
+
+      if (openingStock > 0) {
+        transactions.push({
+          id: generateId(),
+          productId: productId,
+          type: "IN",
+          quantity: openingStock,
+          reference: "OPENING",
+          note: "ยอดสินค้าเริ่มต้น",
+          createdBy: currentUser.name,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      saveAllData();
+      event.target.reset();
+      document.getElementById("productMinimum").value = "10";
+      document.getElementById("productOpeningStock").value = "0";
+      renderAll();
+      showToast("เพิ่มสินค้าเรียบร้อยแล้ว", "success");
+    }
+
+    function requestDeleteProduct(productId) {
+      if (!currentUser || currentUser.role !== "admin") {
+        showToast("เฉพาะผู้ดูแลระบบเท่านั้นที่ลบสินค้าได้", "error");
+        return;
+      }
+
+      var product = findProduct(productId);
+
+      if (!product) {
+        return;
+      }
+
+      var hasHistory = transactions.some(function(row) {
+        return Number(row.productId) === Number(productId);
+      });
+
+      if (hasHistory) {
+        showToast("ไม่สามารถลบสินค้าที่มีประวัติรายการได้", "error");
+        return;
+      }
+
+      showConfirmation(
+        "ยืนยันการลบสินค้า",
+        'ต้องการลบสินค้า "' + product.name + '" หรือไม่',
+        function() {
+          products = products.filter(function(item) {
+            return Number(item.id) !== Number(productId);
+          });
+
+          saveAllData();
+          renderAll();
+          showToast("ลบสินค้าเรียบร้อยแล้ว", "success");
+        }
+      );
+    }
+
+    function addTransaction(event) {
+      event.preventDefault();
+
+      var productId = Number(
+        document.getElementById("transactionProduct").value
+      );
+      var type = document.getElementById("transactionType").value;
+      var quantity = Number(
+        document.getElementById("transactionQuantity").value
+      );
+      var reference = document
+        .getElementById("transactionReference").value.trim();
+      var note = document
+        .getElementById("transactionNote").value.trim();
+      var product = findProduct(productId);
+
+      if (!product) {
+        showToast("กรุณาเลือกสินค้า", "error");
+        return;
+      }
+
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        showToast("จำนวนต้องเป็นเลขจำนวนเต็มมากกว่า 0", "error");
+        return;
+      }
+
+      if (type === "OUT" && quantity > Number(product.stock)) {
+        showToast(
+          "สินค้าไม่เพียงพอ คงเหลือ " +
+          formatNumber(product.stock) + " " + product.unit,
+          "error"
+        );
+        return;
+      }
+
+      product.stock =
+        type === "IN"
+          ? Number(product.stock) + quantity
+          : Number(product.stock) - quantity;
+
+      transactions.push({
+        id: generateId(),
+        productId: productId,
+        type: type,
+        quantity: quantity,
+        reference: reference,
+        note: note,
+        createdBy: currentUser.name,
+        createdAt: new Date().toISOString()
+      });
+
+      saveAllData();
+      event.target.reset();
+      renderAll();
+
+      showToast(
+        type === "IN"
+          ? "บันทึกรับสินค้าเข้าเรียบร้อยแล้ว"
+          : "บันทึกส่งสินค้าออกเรียบร้อยแล้ว",
+        "success"
+      );
+    }
+
+    function renderTransactions() {
+      var rows = transactions.slice().sort(function(a, b) {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+
+      var html = "";
+
+      rows.forEach(function(row) {
+        var product = findProduct(row.productId);
+        var typeText = row.type === "IN" ? "รับเข้า" : "ส่งออก";
+        var badge = row.type === "IN" ? "badge-in" : "badge-out";
+
+        html +=
+          "<tr>" +
+          "<td>" + escapeHtml(formatDateTime(row.createdAt)) + "</td>" +
+          "<td>" + escapeHtml(product ? product.code : "-") + "</td>" +
+          "<td>" + escapeHtml(product ? product.name : "ไม่พบสินค้า") + "</td>" +
+          "<td><span class='badge " + badge + "'>" +
+          typeText + "</span></td>" +
+          "<td>" + formatNumber(row.quantity) + "</td>" +
+          "<td>" + escapeHtml(row.reference || "-") + "</td>" +
+          "<td>" + escapeHtml(row.createdBy || "-") + "</td>" +
+          "<td>" + escapeHtml(row.note || "-") + "</td>" +
+          "</tr>";
+      });
+
+      if (!html) {
+        html =
+          "<tr><td colspan='8' class='empty-state'>" +
+          "ยังไม่มีประวัติรายการ</td></tr>";
+      }
+
+      document.getElementById("transactionTable").innerHTML = html;
+    }
+
+    function getReportRange() {
+      var period = document.getElementById("reportPeriod").value;
+      var selected =
+        document.getElementById("reportDate").value ||
+        getLocalDateString();
+
+      var start = "";
+      var end = "";
+
+      if (period === "day") {
+        start = selected;
+        end = selected;
+      } else if (period === "month") {
+        var parts = selected.split("-");
+        var year = Number(parts[0]);
+        var month = Number(parts[1]);
+        var lastDay = new Date(year, month, 0).getDate();
+
+        start = year + "-" + pad(month) + "-01";
+        end = year + "-" + pad(month) + "-" + pad(lastDay);
+      } else if (period === "year") {
+        var selectedYear = selected.substring(0, 4);
+        start = selectedYear + "-01-01";
+        end = selectedYear + "-12-31";
+      } else {
+        start = document.getElementById("reportStartDate").value;
+        end = document.getElementById("reportEndDate").value;
+      }
+
+      return { start: start, end: end };
+    }
+
+    function generateReport() {
+      if (!currentUser || !canAccess("reports")) {
+        return;
+      }
+
+      var range = getReportRange();
+
+      if (!range.start || !range.end) {
+        showToast("กรุณาระบุช่วงวันที่", "error");
+        return;
+      }
+
+      if (range.start > range.end) {
+        showToast("วันที่เริ่มต้นต้องไม่มากกว่าวันที่สิ้นสุด", "error");
+        return;
+      }
+
+      currentReportRows = transactions
+        .filter(function(row) {
+          var date = getLocalDateString(row.createdAt);
+          return date >= range.start && date <= range.end;
+        })
+        .sort(function(a, b) {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+
+      var totalIn = currentReportRows
+        .filter(function(row) {
+          return row.type === "IN";
+        })
+        .reduce(function(total, row) {
+          return total + Number(row.quantity);
+        }, 0);
+
+      var totalOut = currentReportRows
+        .filter(function(row) {
+          return row.type === "OUT";
+        })
+        .reduce(function(total, row) {
+          return total + Number(row.quantity);
+        }, 0);
+
+      document.getElementById("reportTotalIn").textContent =
+        formatNumber(totalIn);
+      document.getElementById("reportTotalOut").textContent =
+        formatNumber(totalOut);
+      document.getElementById("reportTransactionCount").textContent =
+        formatNumber(currentReportRows.length);
+      document.getElementById("reportNet").textContent =
+        formatNumber(totalIn - totalOut);
+
+      var html = "";
+
+      currentReportRows.forEach(function(row) {
+        var product = findProduct(row.productId);
+        var typeText = row.type === "IN" ? "รับเข้า" : "ส่งออก";
+        var badge = row.type === "IN" ? "badge-in" : "badge-out";
+
+        html +=
+          "<tr>" +
+          "<td>" + escapeHtml(formatDateTime(row.createdAt)) + "</td>" +
+          "<td>" + escapeHtml(product ? product.code : "-") + "</td>" +
+          "<td>" + escapeHtml(product ? product.name : "ไม่พบสินค้า") + "</td>" +
+          "<td><span class='badge " + badge + "'>" +
+          typeText + "</span></td>" +
+          "<td>" + formatNumber(row.quantity) + "</td>" +
+          "<td>" + escapeHtml(row.reference || "-") + "</td>" +
+          "<td>" + escapeHtml(row.createdBy || "-") + "</td>" +
+          "</tr>";
+      });
+
+      if (!html) {
+        html =
+          "<tr><td colspan='7' class='empty-state'>" +
+          "ไม่พบข้อมูลในช่วงเวลาที่เลือก</td></tr>";
+      }
+
+      document.getElementById("reportTable").innerHTML = html;
+    }
+
+    function exportCsv() {
+      if (!currentReportRows.length) {
+        showToast("ไม่มีข้อมูลสำหรับดาวน์โหลด", "error");
+        return;
+      }
+
+      var csvRows = [[
+        "วันและเวลา",
+        "รหัสสินค้า",
+        "ชื่อสินค้า",
+        "ประเภท",
+        "จำนวน",
+        "เลขที่เอกสาร",
+        "ผู้บันทึก",
+        "หมายเหตุ"
+      ]];
+
+      currentReportRows.forEach(function(row) {
+        var product = findProduct(row.productId);
+
+        csvRows.push([
+          formatDateTime(row.createdAt),
+          product ? product.code : "",
+          product ? product.name : "",
+          row.type === "IN" ? "รับเข้า" : "ส่งออก",
+          row.quantity,
+          row.reference || "",
+          row.createdBy || "",
+          row.note || ""
+        ]);
+      });
+
+      function csvEscape(value) {
+        return '"' + String(value).replace(/"/g, '""') + '"';
+      }
+
+      var content =
+        "\uFEFF" +
+        csvRows.map(function(row) {
+          return row.map(csvEscape).join(",");
+        }).join("\r\n");
+
+      var blob = new Blob([content], {
+        type: "text/csv;charset=utf-8"
+      });
+
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement("a");
+
+      link.href = url;
+      link.download = "foodbox-report-" + getLocalDateString() + ".csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setTimeout(function() {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    }
+
+    function resetData() {
+      if (!currentUser || currentUser.role !== "admin") {
+        showToast("เฉพาะผู้ดูแลระบบเท่านั้น", "error");
+        return;
+      }
+
+      showConfirmation(
+        "ยืนยันการคืนค่าระบบ",
+        "ข้อมูลสินค้าและประวัติทั้งหมดจะถูกลบและเปลี่ยนเป็นข้อมูลตัวอย่าง",
+        function() {
+          products = cloneData(DEFAULT_PRODUCTS);
+          transactions = [];
+          currentReportRows = [];
+          saveAllData();
+          renderAll();
+          showToast("คืนค่าข้อมูลเรียบร้อยแล้ว", "success");
+        }
+      );
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderProducts();
+      renderProductOptions();
+      renderTransactions();
+
+      if (currentUser && canAccess("reports")) {
+        generateReport();
+      }
+    }
+
+    document
+      .getElementById("loginForm")
+      .addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        var username =
+          document.getElementById("loginUsername").value.trim();
+        var password =
+          document.getElementById("loginPassword").value;
+        var errorBox = document.getElementById("loginError");
+
+        if (!login(username, password)) {
+          errorBox.textContent = "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง";
+          errorBox.classList.remove("hidden");
+          return;
+        }
+
+        errorBox.classList.add("hidden");
+      });
+
+    document
+      .getElementById("togglePassword")
+      .addEventListener("click", function() {
+        var password = document.getElementById("loginPassword");
+        var hidden = password.type === "password";
+
+        password.type = hidden ? "text" : "password";
+        this.textContent = hidden ? "ซ่อน" : "แสดง";
+      });
+
+    document
+      .getElementById("logoutButton")
+      .addEventListener("click", logout);
+
+    document
+      .getElementById("mobileMenuButton")
+      .addEventListener("click", function() {
+        document.getElementById("sidebar").classList.toggle("open");
+      });
+
+    document.querySelectorAll(".nav-button").forEach(function(button) {
+      button.addEventListener("click", function() {
+        openPage(button.getAttribute("data-page"));
+      });
+    });
+
+    document
+      .getElementById("productForm")
+      .addEventListener("submit", addProduct);
+
+    document
+      .getElementById("transactionForm")
+      .addEventListener("submit", addTransaction);
+
+    document
+      .getElementById("productSearch")
+      .addEventListener("input", renderProducts);
+
+    document
+      .getElementById("reportPeriod")
+      .addEventListener("change", function() {
+        var custom = this.value === "custom";
+
+        document
+          .getElementById("reportDate")
+          .classList.toggle("hidden", custom);
+
+        document
+          .getElementById("reportStartDate")
+          .classList.toggle("hidden", !custom);
+
+        document
+          .getElementById("reportEndDate")
+          .classList.toggle("hidden", !custom);
+      });
+
+    document
+      .getElementById("generateReportButton")
+      .addEventListener("click", generateReport);
+
+    document
+      .getElementById("exportCsvButton")
+      .addEventListener("click", exportCsv);
+
+    document
+      .getElementById("resetDataButton")
+      .addEventListener("click", resetData);
+
+    document
+      .getElementById("confirmCancelButton")
+      .addEventListener("click", closeConfirmation);
+
+    document
+      .getElementById("confirmOkButton")
+      .addEventListener("click", function() {
+        var callback = confirmCallback;
+        closeConfirmation();
+
+        if (typeof callback === "function") {
+          callback();
+        }
+      });
+
+    document
+      .getElementById("confirmOverlay")
+      .addEventListener("click", function(event) {
+        if (event.target === this) {
+          closeConfirmation();
+        }
+      });
+
+    function initializeApp() {
+      var today = getLocalDateString();
+
+      document.getElementById("reportDate").value = today;
+      document.getElementById("reportStartDate").value = today;
+      document.getElementById("reportEndDate").value = today;
+
+      document.getElementById("currentDateText").textContent =
+        new Date().toLocaleDateString("th-TH", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        });
+
+      document.getElementById("loginUsername").focus();
+    }
+
+    initializeApp();
+  </script>
+</body>
+</html>
